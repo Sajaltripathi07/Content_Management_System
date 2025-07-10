@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    container_name: article_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: article_db
+      MYSQL_ROOT_PASSWORD: 12@rusellll
+    ports:
+      - "3307:3306"  # Host 3307 -> Container 3306
+
+  app:
+    build: .
+    container_name: crud_assignment_app
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/article_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 12@rusellll
+    ports:
+      - "8080:8080"
+    command: ["/bin/sh", "-c", "./wait-for-it.sh db 3306 -- java -jar app.jar"] 

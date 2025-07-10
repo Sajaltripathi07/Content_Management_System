@@ -1,0 +1,6 @@
+target/*.original
+target/generated-sources
+target/test-classes
+*.md
+.git
+.gitignore
