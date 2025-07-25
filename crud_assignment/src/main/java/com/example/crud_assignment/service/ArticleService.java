@@ -17,6 +17,8 @@ public interface ArticleService {
 
     Page<Article> list(Pageable pageable);
 
+    Page<Article> listByUser(Long userId, Pageable pageable);
+
     Article update(Long id, Article updated);
 
     void delete(Long id);
