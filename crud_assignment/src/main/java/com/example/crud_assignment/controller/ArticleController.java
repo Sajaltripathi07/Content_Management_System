@@ -60,18 +60,7 @@ public class ArticleController {
                               @RequestParam(defaultValue = "10") int size) {
         User user = userService.getByToken(token);
         if (user == null) return Page.empty();
-        Page<Article> all = service.list(PageRequest.of(page, size));
-
-        //  return articles for  this user only
-        List<Article> userArticles = new ArrayList<>();
-        for (Article article : all.getContent()) {
-            if (article.getUserId().equals(user.getId())) {
-                userArticles.add(article);
-            }
-        }
-
-        return new PageImpl<>(
-                userArticles, all.getPageable(), all.getTotalElements());
+        return service.listByUser(user.getId(), PageRequest.of(page, size));
     }
 
 
