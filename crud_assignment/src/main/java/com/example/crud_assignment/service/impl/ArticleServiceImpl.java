@@ -59,6 +59,12 @@ public class ArticleServiceImpl implements ArticleService {
         return repo.findAll(pageable);
     }
 
+    // Add this method for user-specific pagination
+    @Override
+    public Page<Article> listByUser(Long userId, Pageable pageable) {
+        return repo.findByUserId(userId, pageable);
+    }
+
     @Override
     public Article update(Long id, Article updated) {
         Article existingArticle = repo.findById(id).orElseThrow(
