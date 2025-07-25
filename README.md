@@ -1,4 +1,4 @@
-# Content Management System (CRUD Assignment)
+# Content Management System (Backend)
 
 A Spring Boot backend for managing articles with user authentication, supporting create, view, update, delete, and paginated list operations. Tracks 'recently viewed' articles per user (in-memory, not persisted). Fully dockerized with MySQL.
 
@@ -6,7 +6,7 @@ A Spring Boot backend for managing articles with user authentication, supporting
 
 ## Implementation Summary
 
-### Core Requirements
+### Core features
 - [x] All functionality exposed over RESTful APIs
 - [x] Data is persistent in a MySQL database (via JPA/Hibernate)
 - [x] 'Recently viewed' feature uses only basic collections/primitives (in-memory, not persisted)
@@ -14,7 +14,7 @@ A Spring Boot backend for managing articles with user authentication, supporting
 - [x] docker-compose.yml to run the full stack (separate DB container)
 
 
-### Bonus Points
+### Additional features
 - [x] Authentication: Simple in-memory token-based auth so each user only sees their own articles and recent views
 - [x] Pagination for list articles API
 - [ ] Database schema changelog management (not implemented)
