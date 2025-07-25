@@ -17,7 +17,6 @@ A Spring Boot backend for managing articles with user authentication, supporting
 ### Additional features
 - [x] Authentication: Simple in-memory token-based auth so each user only sees their own articles and recent views
 - [x] Pagination for list articles API
-- [ ] Database schema changelog management (not implemented)
 - [x] Unit tests for service layer (see `src/test/java/com/example/crud_assignment/service/`)
 
 ---
