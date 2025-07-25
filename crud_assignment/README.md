@@ -6,7 +6,7 @@ A Spring Boot backend for managing articles with user authentication, supporting
 
 ## Implementation Summary
 
-### Core Funtionalities
+### Core Functionalities
 - [x] All functionality exposed over RESTful APIs
 - [x] Data is persistent in a MySQL database (via JPA/Hibernate)
 - [x] 'Recently viewed' feature uses only basic collections/primitives (in-memory, not persisted)
@@ -150,6 +150,23 @@ mvn test
 - `GET    /api/articles/recent`  — Get recently viewed article IDs for user
 - `GET    /api/articles`         — List all articles (paginated, user-specific)
   - Query params: `page`, `size`
+  - **Note:** Pagination is now handled at the database level and returns only the current user's articles, correctly paginated. For example, `GET /api/articles?page=1&size=5` returns the second page of 5 articles belonging to the authenticated user.
+  - **Example response:**
+    ```json
+    {
+      "content": [
+        { "id": 6, "title": "...", "content": "...", "author": "...", "userId": 2 },
+        { "id": 7, "title": "...", "content": "...", "author": "...", "userId": 2 }
+      ],
+      "pageable": { ... },
+      "totalPages": 3,
+      "totalElements": 13,
+      "last": false,
+      "size": 5,
+      "number": 1,
+      ...
+    }
+    ```
 - `PUT    /api/articles/{id}`    — Update article (must own)
 - `DELETE /api/articles/{id}`    — Delete article (must own)
 
@@ -175,4 +192,110 @@ mvn test
 - `content` (String)
 - `author` (String)
 - `userId` (Long, owner)
+
+---
+
+## API Usage & Testing
+
+> **Note:** You only need to register a user once. After registration, you can log in with your credentials and access the API any number of times. Registration is a one-time action per username; login can be repeated as needed to obtain a token for authenticated requests.
+
+### How Pagination Works
+- The `GET /api/articles` endpoint supports pagination using `page` and `size` query parameters.
+- Example: `GET /api/articles?page=0&size=3` returns the first page with 3 articles for the authenticated user.
+- If you omit `size`, it defaults to 10. If you omit `page`, it defaults to 0 (the first page).
+- **Do not use duplicate query parameters** (e.g., `?page=0&page=3`). Only the last value will be used.
+
+### How 'Recently Viewed' Articles Work
+- The `GET /api/articles/recent` endpoint returns the IDs of the last 5 articles you have viewed (using the detail endpoint).
+- Only articles accessed via `GET /api/articles/{id}` are tracked as 'recently viewed'.
+- If you have viewed fewer than 5 articles, only those will be shown.
+- The list is in most-recent-first order and is user-specific.
+- Example usage:
+  1. View articles: `GET /api/articles/10`, `GET /api/articles/12`, ...
+  2. Check recent: `GET /api/articles/recent` → `[12, 10, ...]`
+
+### How to Test the APIs
+
+You can use **Postman**, **curl**, or any HTTP client. Below are example requests for each endpoint:
+
+#### 1. Register a User
+```sh
+POST http://localhost:8080/api/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "testpass"
+}
+```
+
+#### 2. Login
+```sh
+POST http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "testpass"
+}
+```
+- The response will be a token string. Use this token in the `token` header for all article requests.
+
+#### 3. Create an Article
+```sh
+POST http://localhost:8080/api/articles
+Content-Type: application/json
+token: <your_token>
+
+{
+  "title": "Sample Article",
+  "content": "This is a test.",
+  "author": "Author Name"
+}
+```
+
+#### 4. List Articles (Paginated)
+```sh
+GET http://localhost:8080/api/articles?page=0&size=3
+token: <your_token>
+```
+
+#### 5. Get Article by ID
+```sh
+GET http://localhost:8080/api/articles/10
+token: <your_token>
+```
+
+#### 6. Get Recently Viewed Articles
+```sh
+GET http://localhost:8080/api/articles/recent
+token: <your_token>
+```
+
+#### 7. Update an Article
+```sh
+PUT http://localhost:8080/api/articles/10
+Content-Type: application/json
+token: <your_token>
+
+{
+  "title": "Updated Title",
+  "content": "Updated content.",
+  "author": "New Author"
+}
+```
+
+#### 8. Delete an Article
+```sh
+DELETE http://localhost:8080/api/articles/10
+token: <your_token>
+```
+
+---
+
+**Tips:**
+- Always include the `token` header for article endpoints.
+- Use the correct `page` and `size` parameters for pagination.
+- To see 5 articles in `/recent`, you must view 5 different articles using the detail endpoint.
+- The API returns paginated results in a standard Spring Data format.
 
