@@ -6,7 +6,7 @@ A Spring Boot backend for managing articles with user authentication, supporting
 
 ## Implementation Summary
 
-### Core features
+### Core Functionalities
 - [x] All functionality exposed over RESTful APIs
 - [x] Data is persistent in a MySQL database (via JPA/Hibernate)
 - [x] 'Recently viewed' feature uses only basic collections/primitives (in-memory, not persisted)
@@ -14,7 +14,7 @@ A Spring Boot backend for managing articles with user authentication, supporting
 - [x] docker-compose.yml to run the full stack (separate DB container)
 
 
-### Additional features
+### Additional Functionalities
 - [x] Authentication: Simple in-memory token-based auth so each user only sees their own articles and recent views
 - [x] Pagination for list articles API
 - [x] Unit tests for service layer (see `src/test/java/com/example/crud_assignment/service/`)
